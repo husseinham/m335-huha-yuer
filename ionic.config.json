@@ -1,0 +1,7 @@
+{
+  "name": "m335-huha-yuer",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
