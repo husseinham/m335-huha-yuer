@@ -5,28 +5,43 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+  <div class="page">
+    <div class="brand">
+      <div class="logo">SJ</div>
+      <div class="headline">Willkommen</div>
+      <div class="subline">Bitte gib deinen Namen ein, um zu starten.</div>
+    </div>
 
-  <ion-item>
-    <ion-input
-      label="Vorname"
-      labelPlacement="stacked"
-      [(ngModel)]="firstName">
-    </ion-input>
-  </ion-item>
+    <ion-card class="card">
+      <ion-card-content>
+        <ion-item lines="full">
+          <ion-input
+            label="Vorname"
+            labelPlacement="stacked"
+            placeholder="z. B. Hussein"
+            [(ngModel)]="firstName">
+          </ion-input>
+        </ion-item>
 
-  <ion-item>
-    <ion-input
-      label="Nachname"
-      labelPlacement="stacked"
-      [(ngModel)]="lastName">
-    </ion-input>
-  </ion-item>
+        <ion-item lines="none">
+          <ion-input
+            label="Nachname"
+            labelPlacement="stacked"
+            placeholder="z. B. Hammade"
+            [(ngModel)]="lastName">
+          </ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
 
-  <ion-button
-    expand="block"
-    class="ion-margin-top"
-    (click)="startGame()">
-    Start
-  </ion-button>
+    <div class="bottom">
+      <ion-button expand="block" size="large" (click)="startGame()">
+        Start
+      </ion-button>
 
+      <div class="hint">
+        Tipp: Standort & Kamera werden gleich abgefragt.
+      </div>
+    </div>
+  </div>
 </ion-content>

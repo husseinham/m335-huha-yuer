@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Aufgabenliste</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="top">
+    <div class="counter">{{ hunt.doneCount }}/{{ hunt.totalCount }} Aufgaben</div>
+    <ion-progress-bar [value]="hunt.progress"></ion-progress-bar>
+  </div>
+
+  <div class="list">
+    <button class="task" *ngFor="let t of hunt.tasks" (click)="openTask(t)" type="button">
+      <div class="left">
+        <ion-icon [name]="t.icon"></ion-icon>
+        <div class="text">
+          <div class="title">{{ t.title }}</div>
+          <div class="sub">{{ t.subtitle }}</div>
+        </div>
+      </div>
+
+      <div class="right">
+        <ion-icon *ngIf="t.done" name="checkmark-circle"></ion-icon>
+        <ion-icon *ngIf="!t.done" name="ellipse-outline"></ion-icon>
+      </div>
+    </button>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="label">Schnitzel</div>
+      <div class="value">{{ hunt.schnitzel }}</div>
+    </div>
+    <div class="stat">
+      <div class="label">Kartoffeln</div>
+      <div class="value">{{ hunt.kartoffeln }}</div>
+    </div>
+  </div>
+
+  <ion-button color="danger" expand="block" class="ion-margin-top" (click)="abortHunt()">
+    Schnitzeljagd abbrechen
+  </ion-button>
+
+</ion-content>
