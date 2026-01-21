@@ -22,3 +22,16 @@ ion-card-title {
   align-items: center;
   justify-content: center;
 }
+.perm-thumb {
+  width: 32px;   /* istersen 24/28/36 dene */
+  height: 32px;
+  --size: 32px;  /* bazı Ionic sürümlerinde etkili */
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.perm-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
