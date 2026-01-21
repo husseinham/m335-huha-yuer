@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>2. Berechtigungen</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="wrapper">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Bevor es losgeht</ion-card-title>
+        <ion-card-subtitle>
+          Für die Schnitzeljagd brauchen wir Zugriff auf Kamera und Standort.
+        </ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <h2>Permissions</h2>
+
+        <ion-button expand="block" (click)="requestAllPermissions()">
+          Kamera & Standort Zugriff
+        </ion-button>
+
+        <ion-card>
+          <ion-card-content>
+            <p>Kamera: {{ cameraStatus }}</p>
+            <p>Standort: {{ locationStatus }}</p>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-list lines="full">
+          <ion-item>
+            <ion-thumbnail slot="start" class="perm-thumb">
+              <img src="assets/icon/camera.png" alt="camera" />
+            </ion-thumbnail>
+
+            <ion-label>
+              <h2>Kamera erlauben</h2>
+              <p>Für QR-Code Aufgaben</p>
+            </ion-label>
+
+            <ion-badge color="medium" slot="end">required</ion-badge>
+          </ion-item>
+
+          <ion-item>
+            <ion-thumbnail slot="start" class="perm-thumb">
+              <img src="assets/icon/location.png" alt="location" />
+            </ion-thumbnail>
+
+            <ion-label>
+              <h2>Standort erlauben</h2>
+              <p>Für Geolocation Aufgaben</p>
+            </ion-label>
+
+            <ion-badge color="medium" slot="end">required</ion-badge>
+          </ion-item>
+        </ion-list>
+
+        <ion-button expand="block" class="ion-margin-top" (click)="requestAllPermissions()">
+          Erlauben
+        </ion-button>
+
+        <ion-button expand="block" fill="outline" (click)="back()">
+          Zurück
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

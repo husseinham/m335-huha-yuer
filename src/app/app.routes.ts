@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { PermissionsPage } from './pages/permissions/permissions.page';
 
 export const routes: Routes = [
   {
@@ -11,4 +12,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/start/start.page').then(m => m.StartPage),
   },
+  {
+    path: 'permissions',
+    component: PermissionsPage
+  },
+
 ];
