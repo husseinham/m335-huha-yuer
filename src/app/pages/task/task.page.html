@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ hunt.getTask(key).title }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <p>{{ hunt.getTask(key).subtitle }}</p>
+
+  <ion-button expand="block" (click)="markDone()">
+    Aufgabe erledigt
+  </ion-button>
+
+  <ion-button expand="block" fill="outline" (click)="skip()">
+    Aufgabe überspringen
+  </ion-button>
+
+  <ion-button expand="block" color="danger" fill="outline" (click)="abort()">
+    Durchlauf abbrechen
+  </ion-button>
+</ion-content>

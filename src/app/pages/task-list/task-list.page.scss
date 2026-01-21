@@ -1,0 +1,76 @@
+.top {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.counter {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.list {
+  display: grid;
+  gap: 10px;
+}
+
+.task {
+  width: 100%;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 16px;
+  padding: 12px 12px;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+ion-icon {
+  font-size: 22px;
+}
+
+.text .title {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.text .sub {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+.right ion-icon {
+  font-size: 22px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.stat {
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 16px;
+  padding: 12px;
+  background: #fff;
+}
+
+.label {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.value {
+  font-size: 18px;
+  font-weight: 800;
+  margin-top: 4px;
+}
