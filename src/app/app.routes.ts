@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { PermissionsPage } from './pages/permissions/permissions.page';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'start', pathMatch: 'full' },
@@ -7,6 +8,11 @@ export const routes: Routes = [
     path: 'start',
     loadComponent: () =>
       import('./pages/start/start.page').then(m => m.StartPage),
+  },
+
+  {
+    path: 'permissions',
+    component: PermissionsPage
   },
 
   {
@@ -21,3 +27,4 @@ export const routes: Routes = [
       import('./pages/task/task.page').then(m => m.TaskPage),
   },
 ];
+

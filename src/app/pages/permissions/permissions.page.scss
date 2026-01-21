@@ -1,0 +1,24 @@
+.wrapper {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+ion-card-title {
+  font-size: 1.2rem;
+}
+
+.hint {
+  margin-top: 12px;
+  display: block;
+}
+
+.perm-thumb {
+  --size: 48px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f3f4f6;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
