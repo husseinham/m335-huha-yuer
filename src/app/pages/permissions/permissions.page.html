@@ -17,6 +17,7 @@
       <ion-card-content>
         <h2>Permissions</h2>
 
+        <!-- IZIN ISTEME BUTONU -->
         <ion-button expand="block" (click)="requestAllPermissions()">
           Kamera & Standort Zugriff
         </ion-button>
@@ -56,8 +57,12 @@
           </ion-item>
         </ion-list>
 
-        <ion-button expand="block" class="ion-margin-top" (click)="requestAllPermissions()">
-          Erlauben
+        <ion-button
+          expand="block"
+          class="ion-margin-top"
+          [disabled]="!canContinue"
+          (click)="continue()">
+          Weiter
         </ion-button>
 
         <ion-button expand="block" fill="outline" (click)="back()">

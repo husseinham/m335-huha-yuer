@@ -15,6 +15,8 @@ export class PermissionsPage {
   cameraStatus: string = 'unknown';
   locationStatus: string = 'unknown';
 
+  canContinue = false;
+
   constructor(private navCtrl: NavController) {}
 
   async requestAllPermissions() {
@@ -23,12 +25,21 @@ export class PermissionsPage {
 
     const geo = await Geolocation.requestPermissions();
     this.locationStatus = geo.location ?? 'unknown';
+
+    this.updateContinueState();
+  }
+
+  updateContinueState() {
+    this.canContinue =
+      this.cameraStatus === 'granted' &&
+      this.locationStatus === 'granted';
+  }
+
+  continue() {
+    this.navCtrl.navigateForward('/task-list');
   }
 
   back() {
     this.navCtrl.back();
   }
 }
-
-
-
