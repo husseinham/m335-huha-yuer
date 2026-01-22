@@ -17,6 +17,7 @@ import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 export class TaskPage implements OnInit, OnDestroy {
   key!: TaskKey;
 
+
   isCharging = false;
   batteryLevel: number | null = null;
   private pollId?: any;
@@ -36,6 +37,10 @@ export class TaskPage implements OnInit, OnDestroy {
 
     if (this.key === 'power') {
       this.startPolling();
+    }
+
+    if (this.key === 'qr') {
+      this.qrValue = this.hunt.getTask('qr').result ?? null;
     }
   }
 
@@ -89,6 +94,9 @@ export class TaskPage implements OnInit, OnDestroy {
 
       if (first?.rawValue) {
         this.qrValue = first.rawValue;
+
+        this.hunt.getTask('qr').result = first.rawValue;
+
         try {
           await Haptics.impact({ style: ImpactStyle.Light });
         } catch {}
@@ -102,6 +110,8 @@ export class TaskPage implements OnInit, OnDestroy {
 
   clearQr() {
     this.qrValue = null;
+
+    this.hunt.getTask('qr').result = undefined;
   }
 
   get canComplete(): boolean {
