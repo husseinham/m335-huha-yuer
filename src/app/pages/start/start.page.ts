@@ -9,12 +9,14 @@ import {
   IonContent,
   IonItem,
   IonInput,
-  IonButton
+  IonButton,
+  IonCard,
+  IonCardContent
 } from "@ionic/angular/standalone";
 
 @Component({
    standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonInput, IonButton, FormsModule],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonInput, IonButton, FormsModule, IonCard, IonCardContent],
   selector: 'app-start',
   templateUrl: './start.page.html',
   styleUrls: ['./start.page.scss'],
