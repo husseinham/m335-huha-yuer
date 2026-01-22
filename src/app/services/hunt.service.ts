@@ -9,14 +9,15 @@ export type TaskState = {
   icon: string;
   done: boolean;
   skipped: boolean;
-  startedAt?: number;      
-  finishedAt?: number;     
-  potato: boolean;         
+  startedAt?: number;
+  finishedAt?: number;
+  potato: boolean;
+
+  result?: string;
 };
 
 @Injectable({ providedIn: 'root' })
 export class HuntService {
-  // ab 60 Sekunden gibt’s eine Kartoffel
   private readonly potatoThresholdMs = 60_000;
 
   firstName = '';
@@ -35,7 +36,6 @@ export class HuntService {
     this.lastName = last.trim();
     this.huntStartedAt = Date.now();
 
-    // Reset falls neuer Durchlauf
     this.tasks = this.tasks.map(t => ({
       ...t,
       done: false,
@@ -43,6 +43,7 @@ export class HuntService {
       potato: false,
       startedAt: undefined,
       finishedAt: undefined,
+      result: undefined,
     }));
   }
 
@@ -55,12 +56,10 @@ export class HuntService {
   }
 
   get schnitzel(): number {
-    // pro erledigte Aufgabe ein Schnitzel
     return this.doneCount;
   }
 
   get kartoffeln(): number {
-    // Kartoffel nur für erledigte Aufgaben, wenn potato=true
     return this.tasks.filter(t => t.done && t.potato).length;
   }
 
