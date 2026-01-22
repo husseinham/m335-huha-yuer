@@ -76,8 +76,8 @@ export class HuntService {
   }
 
   get isFinished(): boolean {
-    return this.totalCount > 0 && this.doneCount === this.totalCount;
-  }
+  return this.doneCount === this.totalCount;
+}
 
   get durationSeconds(): number {
     if (!this.huntStartedAt) return 0;
@@ -122,21 +122,23 @@ export class HuntService {
   }
 
   createRun(): HuntRun {
-    const name = `${this.firstName} ${this.lastName}`.trim();
-    const durationSeconds = this.durationSeconds;
-    const schnitzel = this.schnitzel;
-    const kartoffeln = this.kartoffeln;
-    const points = schnitzel;
+  const name = `${this.firstName} ${this.lastName}`.trim();
+  const durationSeconds = this.durationSeconds;
+  const schnitzel = this.schnitzel;
+  const kartoffeln = this.kartoffeln;
 
-    return {
-      name,
-      dateIso: new Date().toISOString(),
-      durationSeconds,
-      schnitzel,
-      kartoffeln,
-      points,
-    };
-  }
+  const points = schnitzel * 10 + kartoffeln * 5;
+
+  return {
+    name,
+    dateIso: new Date().toISOString(),
+    durationSeconds,
+    schnitzel,
+    kartoffeln,
+    points,
+  };
+}
+
 
   saveRun(run: HuntRun) {
     const key = 'hunts';
@@ -161,4 +163,9 @@ export class HuntService {
       result: undefined,
     }));
   }
+  get points(): number {
+  return this.schnitzel * 10 + this.kartoffeln * 5;
+}
+
+
 }

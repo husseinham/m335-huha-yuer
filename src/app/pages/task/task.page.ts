@@ -169,26 +169,23 @@ export class TaskPage implements OnInit, OnDestroy {
     return true;
   }
 
-  // ---------- Buttons ----------
-  async markDone() {
-    if (!this.canComplete) return;
+ async markDone() {
+  if (!this.canComplete) return;
 
-    this.hunt.completeTask(this.key);
+  this.hunt.completeTask(this.key);
 
-    // haptisches Zeichen (Anforderung)
-    try {
-      await Haptics.impact({ style: ImpactStyle.Medium });
-    } catch {}
+  try {
+    await Haptics.impact({ style: ImpactStyle.Medium });
+  } catch {}
 
-    // fertig? -> Ergebnis-Seite
-    if (this.hunt.isFinished) {
-      this.router.navigateByUrl('/finish');
-      return;
-    }
-
-    // sonst zurück zur Liste
-    this.router.navigateByUrl('/task-list');
+  if (this.hunt.isFinished) {
+    this.router.navigateByUrl('/finish');
+    return;
   }
+
+  this.router.navigateByUrl('/task-list');
+}
+
 
   skip() {
     this.hunt.skipTask(this.key);
