@@ -5,6 +5,7 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HuntService, TaskKey } from '../../services/hunt.service';
 import { Device } from '@capacitor/device';
+import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 
 @Component({
   standalone: true,
@@ -17,8 +18,11 @@ export class TaskPage implements OnInit, OnDestroy {
   key!: TaskKey;
 
   isCharging = false;
+  batteryLevel: number | null = null;
   private pollId?: any;
-  private autoCompleted = false;
+
+  qrValue: string | null = null;
+  qrScanning = false;
 
   constructor(
     public hunt: HuntService,
@@ -40,17 +44,8 @@ export class TaskPage implements OnInit, OnDestroy {
   }
 
   private startPolling() {
-    this.pollId = setInterval(async () => {
-      try {
-        const info = await Device.getBatteryInfo();
-        this.isCharging = !!info.isCharging;
-
-        if (this.isCharging) {
-          await this.autoCompletePowerTask();
-        }
-      } catch {
-      }
-    }, 1000);
+    this.readBattery();
+    this.pollId = setInterval(() => this.readBattery(), 1000);
   }
 
   private stopPolling() {
@@ -60,25 +55,70 @@ export class TaskPage implements OnInit, OnDestroy {
     }
   }
 
-  private async autoCompletePowerTask() {
-    if (this.autoCompleted) return;
-    this.autoCompleted = true;
+  private async readBattery() {
+    try {
+      const info = await Device.getBatteryInfo();
+      this.isCharging = !!info.isCharging;
 
-    this.stopPolling();
-    this.hunt.completeTask('power');
+      const level = (info as any).batteryLevel;
+      this.batteryLevel = typeof level === 'number' ? level : null;
+    } catch {
+      this.isCharging = false;
+      this.batteryLevel = null;
+    }
+  }
+
+  get batteryPercentText(): string {
+    if (this.batteryLevel === null) return '–%';
+    return `${Math.round(this.batteryLevel * 100)}%`;
+  }
+
+  async scanQr() {
+    if (this.key !== 'qr') return;
+
+    try {
+      this.qrScanning = true;
+
+      const perm = await BarcodeScanner.requestPermissions();
+      if (perm.camera !== 'granted') {
+        return;
+      }
+
+      const result = await BarcodeScanner.scan();
+      const first = result.barcodes?.[0];
+
+      if (first?.rawValue) {
+        this.qrValue = first.rawValue;
+        try {
+          await Haptics.impact({ style: ImpactStyle.Light });
+        } catch {}
+      }
+    } catch (e) {
+      console.warn('QR scan cancelled/failed:', e);
+    } finally {
+      this.qrScanning = false;
+    }
+  }
+
+  clearQr() {
+    this.qrValue = null;
+  }
+
+  get canComplete(): boolean {
+    if (this.key === 'power') return this.isCharging;
+    if (this.key === 'qr') return !!this.qrValue;
+    return true;
+  }
+
+  async markDone() {
+    if (!this.canComplete) return;
+
+    this.hunt.completeTask(this.key);
 
     try {
       await Haptics.impact({ style: ImpactStyle.Medium });
     } catch {}
 
-    this.router.navigateByUrl('/task-list');
-  }
-
-  async markDone() {
-    if (this.key === 'power') return;
-
-    this.hunt.completeTask(this.key);
-    try { await Haptics.impact({ style: ImpactStyle.Medium }); } catch {}
     this.router.navigateByUrl('/task-list');
   }
 
