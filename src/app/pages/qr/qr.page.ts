@@ -16,7 +16,7 @@ import { HuntService } from '../../services/hunt.service';
 export class QrPage implements OnInit {
   private readonly EXPECTED_QR_CONTENT = 'nicht M335@ICT-BZ';
 
-  qrValue: string | null = null;     // ekranda göstermek için (son okunan)
+  qrValue: string | null = null;
   qrScanning = false;
 
   constructor(public hunt: HuntService, private router: Router) {}
