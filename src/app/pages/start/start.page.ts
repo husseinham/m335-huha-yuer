@@ -11,7 +11,7 @@ import {
   IonInput,
   IonButton,
   IonCard,
-  IonCardContent
+  IonCardContent,
 } from "@ionic/angular/standalone";
 
 @Component({
