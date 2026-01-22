@@ -20,7 +20,7 @@ export class GeoPage implements OnDestroy {
 
 
   // Radius 
- public readonly radiusMeters = 15;
+ public readonly radiusMeters = 20;
 
 
   distanceMeters: number | null = null;
