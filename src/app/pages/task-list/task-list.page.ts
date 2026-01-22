@@ -18,13 +18,12 @@ export class TaskListPage {
   this.hunt.startTask(t.key);
 
   if (t.key === 'geo') {
-    this.router.navigateByUrl('/task/geo');
+    this.router.navigateByUrl('/geo');
     return;
   }
 
   this.router.navigateByUrl(`/task/${t.key}`);
 }
-
 
   abortHunt() {
     this.router.navigateByUrl('/leaderboard'); // später
