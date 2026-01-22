@@ -149,9 +149,15 @@ export class GeoPage implements OnDestroy {
   }
 
   weiter() {
-    if (!this.inZone) return;
-    this.router.navigateByUrl('/task-list');
+  if (!this.inZone) return;
+
+  if (this.hunt.isFinished) {
+    this.router.navigateByUrl('/finish');
+    return;
   }
+
+  this.router.navigateByUrl('/task-list');
+}
 
   ueberspringen() {
     this.hunt.skipTask('geo');

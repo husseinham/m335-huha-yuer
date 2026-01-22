@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Ergebnis</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="hero">
+    <div class="title">Schnitzeljagd abgeschlossen! 🎉</div>
+    <div class="sub">
+      <div class="line"><b>{{ run?.name }}</b></div>
+      <div class="line">{{ run?.dateIso | date:'dd.MM.yyyy HH:mm' }}</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Schnitzel</div>
+      <div class="value">{{ run?.schnitzel }}</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Kartoffeln</div>
+      <div class="value">{{ run?.kartoffeln }}</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Dauer</div>
+      <div class="value">{{ hunt.formatDuration(run?.durationSeconds ?? 0) }}
+</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Punkte</div>
+      <div class="value">{{ run?.points }}</div>
+    </div>
+  </div>
+
+  <ion-button expand="block" class="ion-margin-top" (click)="toLeaderboard()">
+  Zum Leaderboard
+</ion-button>
+
+  <ion-button expand="block" fill="outline" (click)="newHunt()">
+  Neue Schnitzeljagd
+</ion-button>
+
+ 
+</ion-content>

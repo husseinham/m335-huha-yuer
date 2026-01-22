@@ -28,6 +28,6 @@ openTask(t: TaskState) {
 }
 
   abortHunt() {
-    this.router.navigateByUrl('/leaderboard'); // später
+    this.router.navigateByUrl('/start'); // später
   }
 }

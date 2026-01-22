@@ -12,8 +12,16 @@ export type TaskState = {
   startedAt?: number;
   finishedAt?: number;
   potato: boolean;
-
   result?: string;
+};
+
+export type HuntRun = {
+  name: string;
+  dateIso: string;
+  durationSeconds: number;
+  schnitzel: number;
+  kartoffeln: number;
+  points: number;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -67,6 +75,21 @@ export class HuntService {
     return this.totalCount === 0 ? 0 : this.doneCount / this.totalCount;
   }
 
+  get isFinished(): boolean {
+    return this.totalCount > 0 && this.doneCount === this.totalCount;
+  }
+
+  get durationSeconds(): number {
+    if (!this.huntStartedAt) return 0;
+    return Math.max(0, Math.floor((Date.now() - this.huntStartedAt) / 1000));
+  }
+
+  formatDuration(totalSeconds: number): string {
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+
   getTask(key: TaskKey): TaskState {
     const t = this.tasks.find(x => x.key === key);
     if (!t) throw new Error('Task not found: ' + key);
@@ -96,5 +119,46 @@ export class HuntService {
     const t = this.getTask(key);
     if (t.done) return;
     t.skipped = true;
+  }
+
+  createRun(): HuntRun {
+    const name = `${this.firstName} ${this.lastName}`.trim();
+    const durationSeconds = this.durationSeconds;
+    const schnitzel = this.schnitzel;
+    const kartoffeln = this.kartoffeln;
+    const points = schnitzel;
+
+    return {
+      name,
+      dateIso: new Date().toISOString(),
+      durationSeconds,
+      schnitzel,
+      kartoffeln,
+      points,
+    };
+  }
+
+  saveRun(run: HuntRun) {
+    const key = 'hunts';
+    const raw = localStorage.getItem(key);
+    const arr: HuntRun[] = raw ? JSON.parse(raw) : [];
+    arr.unshift(run);
+    localStorage.setItem(key, JSON.stringify(arr));
+  }
+
+  reset() {
+    this.firstName = '';
+    this.lastName = '';
+    this.huntStartedAt = undefined;
+
+    this.tasks = this.tasks.map(t => ({
+      ...t,
+      done: false,
+      skipped: false,
+      potato: false,
+      startedAt: undefined,
+      finishedAt: undefined,
+      result: undefined,
+    }));
   }
 }
