@@ -25,6 +25,10 @@
           <div style="opacity:.85;">
             {{ qrValue ?? 'Noch kein Code gescannt.' }}
           </div>
+          <div class="ion-margin-top" style="opacity:.85;">
+            <span *ngIf="canComplete">✅ Richtiger QR-Code</span>
+            <span *ngIf="isWrongQr">❌ Falscher QR-Code</span>
+          </div>
         </ion-label>
       </ion-item>
 

@@ -14,18 +14,25 @@ import { HuntService } from '../../services/hunt.service';
   imports: [IonicModule, CommonModule],
 })
 export class QrPage implements OnInit {
-  qrValue: string | null = null;
+  private readonly EXPECTED_QR_CONTENT = 'nicht M335@ICT-BZ';
+
+  qrValue: string | null = null;     // ekranda göstermek için (son okunan)
   qrScanning = false;
 
   constructor(public hunt: HuntService, private router: Router) {}
 
   ngOnInit() {
     this.hunt.startTask('qr');
-    this.qrValue = this.hunt.getTask('qr').result ?? null;
+    const saved = this.hunt.getTask('qr').result ?? null;
+    this.qrValue = saved;
   }
 
   get canComplete(): boolean {
-    return !!this.qrValue;
+    return (this.hunt.getTask('qr').result ?? '') === this.EXPECTED_QR_CONTENT;
+  }
+
+  get isWrongQr(): boolean {
+    return !!this.qrValue && !this.canComplete;
   }
 
   async scanQr() {
@@ -37,11 +44,15 @@ export class QrPage implements OnInit {
 
       const result = await BarcodeScanner.scan();
       const first = result.barcodes?.[0];
+      if (!first?.rawValue) return;
 
-      if (first?.rawValue) {
-        this.qrValue = first.rawValue;
-        this.hunt.getTask('qr').result = first.rawValue;
-
+      const value = first.rawValue.trim();
+      this.qrValue = value;
+      if (value === this.EXPECTED_QR_CONTENT) {
+        this.hunt.getTask('qr').result = value;
+        try { await Haptics.impact({ style: ImpactStyle.Medium }); } catch {}
+      } else {
+        this.hunt.getTask('qr').result = undefined;
         try { await Haptics.impact({ style: ImpactStyle.Light }); } catch {}
       }
     } catch (e) {
