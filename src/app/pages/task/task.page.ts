@@ -17,8 +17,8 @@ export class TaskPage implements OnInit, OnDestroy {
   key!: TaskKey;
 
   isCharging = false;
+  batteryLevel: number | null = null;
   private pollId?: any;
-  private autoCompleted = false;
 
   constructor(
     public hunt: HuntService,
@@ -40,16 +40,10 @@ export class TaskPage implements OnInit, OnDestroy {
   }
 
   private startPolling() {
-    this.pollId = setInterval(async () => {
-      try {
-        const info = await Device.getBatteryInfo();
-        this.isCharging = !!info.isCharging;
+    this.readBattery();
 
-        if (this.isCharging) {
-          await this.autoCompletePowerTask();
-        }
-      } catch {
-      }
+    this.pollId = setInterval(() => {
+      this.readBattery();
     }, 1000);
   }
 
@@ -60,25 +54,39 @@ export class TaskPage implements OnInit, OnDestroy {
     }
   }
 
-  private async autoCompletePowerTask() {
-    if (this.autoCompleted) return;
-    this.autoCompleted = true;
+  private async readBattery() {
+    try {
+      const info = await Device.getBatteryInfo();
+      this.isCharging = !!info.isCharging;
 
-    this.stopPolling();
-    this.hunt.completeTask('power');
+      const level = (info as any).batteryLevel;
+      this.batteryLevel = typeof level === 'number' ? level : null;
+    } catch {
+      this.isCharging = false;
+      this.batteryLevel = null;
+    }
+  }
+
+  get batteryPercentText(): string {
+    if (this.batteryLevel === null) return '–%';
+    const pct = Math.round(this.batteryLevel * 100);
+    return `${pct}%`;
+  }
+
+  get canComplete(): boolean {
+    if (this.key === 'power') return this.isCharging;
+    return true;
+  }
+
+  async markDone() {
+    if (!this.canComplete) return;
+
+    this.hunt.completeTask(this.key);
 
     try {
       await Haptics.impact({ style: ImpactStyle.Medium });
     } catch {}
 
-    this.router.navigateByUrl('/task-list');
-  }
-
-  async markDone() {
-    if (this.key === 'power') return;
-
-    this.hunt.completeTask(this.key);
-    try { await Haptics.impact({ style: ImpactStyle.Medium }); } catch {}
     this.router.navigateByUrl('/task-list');
   }
 
