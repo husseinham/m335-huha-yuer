@@ -17,11 +17,12 @@ import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 export class TaskPage implements OnInit, OnDestroy {
   key!: TaskKey;
 
-
+  // POWER
   isCharging = false;
   batteryLevel: number | null = null;
   private pollId?: any;
 
+  // QR
   qrValue: string | null = null;
   qrScanning = false;
 
@@ -48,6 +49,7 @@ export class TaskPage implements OnInit, OnDestroy {
     this.stopPolling();
   }
 
+  // ---------- POWER ----------
   private startPolling() {
     this.readBattery();
     this.pollId = setInterval(() => this.readBattery(), 1000);
@@ -63,6 +65,7 @@ export class TaskPage implements OnInit, OnDestroy {
   private async readBattery() {
     try {
       const info = await Device.getBatteryInfo();
+
       this.isCharging = !!info.isCharging;
 
       const level = (info as any).batteryLevel;
@@ -78,6 +81,7 @@ export class TaskPage implements OnInit, OnDestroy {
     return `${Math.round(this.batteryLevel * 100)}%`;
   }
 
+  // ---------- QR ----------
   async scanQr() {
     if (this.key !== 'qr') return;
 
@@ -85,24 +89,21 @@ export class TaskPage implements OnInit, OnDestroy {
       this.qrScanning = true;
 
       const perm = await BarcodeScanner.requestPermissions();
-      if (perm.camera !== 'granted') {
-        return;
-      }
+      if (perm.camera !== 'granted') return;
 
       const result = await BarcodeScanner.scan();
       const first = result.barcodes?.[0];
 
       if (first?.rawValue) {
         this.qrValue = first.rawValue;
-
         this.hunt.getTask('qr').result = first.rawValue;
 
         try {
           await Haptics.impact({ style: ImpactStyle.Light });
         } catch {}
       }
-    } catch (e) {
-      console.warn('QR scan cancelled/failed:', e);
+    } catch {
+      // scan abgebrochen oder fehlgeschlagen -> ignorieren
     } finally {
       this.qrScanning = false;
     }
@@ -110,25 +111,34 @@ export class TaskPage implements OnInit, OnDestroy {
 
   clearQr() {
     this.qrValue = null;
-
     this.hunt.getTask('qr').result = undefined;
   }
 
+  // ---------- UI-Logik ----------
   get canComplete(): boolean {
     if (this.key === 'power') return this.isCharging;
     if (this.key === 'qr') return !!this.qrValue;
     return true;
   }
 
+  // ---------- Buttons ----------
   async markDone() {
     if (!this.canComplete) return;
 
     this.hunt.completeTask(this.key);
 
+    // haptisches Zeichen (Anforderung)
     try {
       await Haptics.impact({ style: ImpactStyle.Medium });
     } catch {}
 
+    // fertig? -> Ergebnis-Seite
+    if (this.hunt.isFinished) {
+      this.router.navigateByUrl('/finish');
+      return;
+    }
+
+    // sonst zurück zur Liste
     this.router.navigateByUrl('/task-list');
   }
 
@@ -138,6 +148,7 @@ export class TaskPage implements OnInit, OnDestroy {
   }
 
   abort() {
-    this.router.navigateByUrl('/leaderboard');
+    // Abbrechen -> zurück zur Startseite (wie du wolltest)
+    this.router.navigateByUrl('/start');
   }
 }

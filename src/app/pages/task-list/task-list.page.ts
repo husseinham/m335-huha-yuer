@@ -26,6 +26,6 @@ export class TaskListPage {
 }
 
   abortHunt() {
-    this.router.navigateByUrl('/leaderboard'); // später
+    this.router.navigateByUrl('/start'); // später
   }
 }

@@ -35,6 +35,16 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./pages/geo/geo.page').then(m => m.GeoPage),
 },
+  {
+    path: 'finish',
+    loadComponent: () => import('./pages/finish/finish.page').then( m => m.FinishPage)
+  },
+
+{
+  path: 'finish',
+  loadComponent: () =>
+    import('./pages/finish/finish.page').then(m => m.FinishPage),
+},
 
 ];
 
