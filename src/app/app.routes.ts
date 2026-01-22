@@ -45,6 +45,12 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./pages/finish/finish.page').then(m => m.FinishPage),
 },
+{
+  path: 'leaderboard',
+  loadComponent: () =>
+    import('./pages/leaderboard/leaderboard.page').then(m => m.LeaderboardPage),
+},
+
 
 ];
 

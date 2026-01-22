@@ -18,10 +18,8 @@ import { Motion } from '@capacitor/motion';
 export class TaskPage implements OnInit, OnDestroy {
   key!: TaskKey;
 
-<<<<<<< HEAD
+
   // POWER
-=======
->>>>>>> 05fca8a77b0dce15e35b2e709301de16c477356f
   isCharging = false;
   batteryLevel: number | null = null;
   private pollId?: any;
@@ -129,9 +127,8 @@ export class TaskPage implements OnInit, OnDestroy {
     this.hunt.getTask('qr').result = undefined;
   }
 
-<<<<<<< HEAD
+
   // ---------- UI-Logik ----------
-=======
   private async startMotion() {
     if (this.key !== 'sensor') return;
 
@@ -165,8 +162,6 @@ export class TaskPage implements OnInit, OnDestroy {
     } catch {}
     this.motionHandle = undefined;
   }
-
->>>>>>> 05fca8a77b0dce15e35b2e709301de16c477356f
   get canComplete(): boolean {
     if (this.key === 'power') return this.isCharging;
     if (this.key === 'qr') return !!this.qrValue;

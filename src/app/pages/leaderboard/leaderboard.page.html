@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Leaderboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="topActions">
+    <ion-button expand="block" (click)="newHunt()">
+      Neue Schnitzeljagd
+    </ion-button>
+
+    <ion-button expand="block" fill="outline" (click)="backHome()">
+      Zur Startseite
+    </ion-button>
+  </div>
+
+  <ion-card *ngIf="runs.length === 0" class="emptyCard">
+    <ion-card-header>
+      <ion-card-title>Noch keine Einträge</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Starte eine Schnitzeljagd, löse Aufgaben und speichere dein Ergebnis.
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list *ngIf="runs.length > 0">
+    <ion-item *ngFor="let r of runs; let i = index">
+      <ion-label>
+        <div class="row">
+          <div class="name">
+            <b>#{{ i + 1 }}</b> {{ r.name || 'Unbekannt' }}
+          </div>
+          <div class="points">
+            {{ r.points }} P
+          </div>
+        </div>
+
+        <div class="meta">
+          <span>{{ formatDate(r.dateIso) }}</span>
+          <span>•</span>
+          <span>Dauer: {{ durationLabel(r.durationSeconds) }}</span>
+        </div>
+
+        <div class="chips">
+          <span class="chip">🥩 {{ r.schnitzel }}</span>
+          <span class="chip">🥔 {{ r.kartoffeln }}</span>
+        </div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-button
+    *ngIf="runs.length > 0"
+    color="danger"
+    expand="block"
+    fill="outline"
+    class="ion-margin-top"
+    (click)="clearAll()"
+  >
+    Alle Einträge löschen
+  </ion-button>
+</ion-content>
