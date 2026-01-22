@@ -13,12 +13,11 @@ import { HuntService } from '../../services/hunt.service';
   imports: [IonicModule, CommonModule],
 })
 export class GeoPage implements OnDestroy {
-  // FIXES Ziel (dein gewünschter Standort)
+//ZielOrt
   public targetLat = 47.0269592;
   public targetLng = 8.3009105;
 
-  // Zielzone (Meter)
-  public readonly radiusMeters = 10;
+  public readonly radiusMeters = 50;
 
   distanceMeters: number | null = null;
   accuracyMeters: number | null = null;
@@ -48,10 +47,8 @@ export class GeoPage implements OnDestroy {
   async startTracking() {
     this.loading = true;
 
-    // Falls schon aktiv -> stoppen
     this.stopTracking();
 
-    // 1) Sofort einmal Position holen
     try {
       const pos = await Geolocation.getCurrentPosition({
         enableHighAccuracy: true,
@@ -60,10 +57,10 @@ export class GeoPage implements OnDestroy {
       });
       this.updateDistance(pos);
     } catch {
-      // ignorieren, wir versuchen es weiter unten per watch/poll
+     
     }
 
-    // 2) Live Updates via watchPosition
+   
     try {
       this.watchId = await Geolocation.watchPosition(
         {
@@ -80,7 +77,6 @@ export class GeoPage implements OnDestroy {
       this.watchId = null;
     }
 
-    // 3) Zusätzlicher Poll (Android liefert manchmal zu selten watch-Updates)
     this.pollTimer = setInterval(async () => {
       try {
         const pos = await Geolocation.getCurrentPosition({
@@ -110,19 +106,16 @@ export class GeoPage implements OnDestroy {
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
 
-    // Genauigkeit anzeigen (hilft beim Debugging auf Android)
     this.accuracyMeters = pos.coords.accuracy != null ? Math.round(pos.coords.accuracy) : null;
 
     const d = this.haversineMeters(lat, lng, this.targetLat, this.targetLng);
 
-    // floor statt round -> weniger "steht fest"
     const shown = Math.max(0, Math.floor(d));
 
     if (shown <= this.radiusMeters) {
       this.distanceMeters = 0;
       this.inZone = true;
 
-      // Aufgabe als erledigt markieren (nur einmal)
       if (!this.hunt.getTask('geo').done) {
         this.hunt.completeTask('geo');
       }
@@ -165,6 +158,6 @@ export class GeoPage implements OnDestroy {
   }
 
   abbrechen() {
-    this.router.navigateByUrl('/leaderboard'); // später
+    this.router.navigateByUrl('/leaderboard'); 
   }
 }

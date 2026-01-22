@@ -52,4 +52,20 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/finish/finish.page').then( m => m.FinishPage)
   },
 
+<<<<<<< HEAD
+=======
+{
+  path: 'finish',
+  loadComponent: () =>
+    import('./pages/finish/finish.page').then(m => m.FinishPage),
+},
+{
+  path: 'leaderboard',
+  loadComponent: () =>
+    import('./pages/leaderboard/leaderboard.page').then(m => m.LeaderboardPage),
+},
+
+
+
+>>>>>>> f44c71ad8b44c9be795de10ff0d5b642b4ddd13e
 ];
