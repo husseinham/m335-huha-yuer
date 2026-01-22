@@ -52,6 +52,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/finish/finish.page').then( m => m.FinishPage)
   },
 
+
 {
   path: 'finish',
   loadComponent: () =>
@@ -62,7 +63,6 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./pages/leaderboard/leaderboard.page').then(m => m.LeaderboardPage),
 },
-
 
 
 ];
