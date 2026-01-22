@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>📍 Zur Zielzone!</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="wrap">
+    <div class="text">
+      Begib dich zum angegebenen Standort!
+    </div>
+
+    <div class="mapPlaceholder">
+      <div class="pin">📍</div>
+      <div class="hint">Zielbereich</div>
+    </div>
+
+    <div class="distance">
+      Distanz:
+      <span class="value">
+        <ng-container *ngIf="distanceMeters !== null; else unknown">
+          {{ distanceMeters }} m
+        </ng-container>
+        <ng-template #unknown>--</ng-template>
+      </span>
+    </div>
+
+    <ion-note *ngIf="loading">Standort wird geladen…</ion-note>
+    <ion-note *ngIf="!loading && !inZone">
+      Gehe näher zum Ziel (Radius {{ radiusMeters }} m).
+    </ion-note>
+    <ion-note *ngIf="inZone" color="success">
+      Ziel erreicht! Du kannst jetzt weiter.
+    </ion-note>
+
+    <div class="buttons">
+      <ion-button expand="block" [disabled]="!inZone" (click)="weiter()">
+        Weiter
+      </ion-button>
+
+      <ion-button expand="block" fill="outline" (click)="ueberspringen()">
+        Überspringen
+      </ion-button>
+
+      <ion-button expand="block" color="danger" fill="outline" (click)="abbrechen()">
+        Abbrechen
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

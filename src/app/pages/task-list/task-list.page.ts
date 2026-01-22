@@ -14,10 +14,17 @@ import { HuntService, TaskState } from '../../services/hunt.service';
 export class TaskListPage {
   constructor(public hunt: HuntService, private router: Router) {}
 
-  openTask(t: TaskState) {
-    this.hunt.startTask(t.key);
-    this.router.navigateByUrl(`/task/${t.key}`);
+ openTask(t: TaskState) {
+  this.hunt.startTask(t.key);
+
+  if (t.key === 'geo') {
+    this.router.navigateByUrl('/task/geo');
+    return;
   }
+
+  this.router.navigateByUrl(`/task/${t.key}`);
+}
+
 
   abortHunt() {
     this.router.navigateByUrl('/leaderboard'); // später

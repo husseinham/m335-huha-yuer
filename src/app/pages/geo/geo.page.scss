@@ -1,0 +1,44 @@
+.wrap {
+  display: grid;
+  gap: 14px;
+}
+
+.text {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.mapPlaceholder {
+  height: 170px;
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(0,0,0,.03);
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.pin {
+  font-size: 34px;
+}
+
+.hint {
+  position: absolute;
+  bottom: 10px;
+  font-size: 12px;
+  opacity: .7;
+}
+
+.distance {
+  font-size: 16px;
+}
+
+.value {
+  font-weight: 800;
+  margin-left: 6px;
+}
+
+.buttons {
+  display: grid;
+  gap: 10px;
+}
