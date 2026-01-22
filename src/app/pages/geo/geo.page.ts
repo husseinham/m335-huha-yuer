@@ -13,14 +13,14 @@ import { HuntService } from '../../services/hunt.service';
   imports: [IonicModule, CommonModule],
 })
 export class GeoPage implements OnDestroy {
-  // Unsere Koordinaten
-  public targetLat = 0;
-  public targetLng = 0;
+  // Unsere ZielKoordinaten
+  public targetLat = 47.0269592;
+  public targetLng =  8.3009105;
 
 
 
   // Radius 
- public readonly radiusMeters = 5;
+ public readonly radiusMeters = 15;
 
 
   distanceMeters: number | null = null;
@@ -56,8 +56,8 @@ export class GeoPage implements OnDestroy {
       const pos = await Geolocation.getCurrentPosition({
   enableHighAccuracy: true,
 });
-this.targetLat = pos.coords.latitude + 0.00012;
-this.targetLng = pos.coords.longitude + 0.00012;
+//this.targetLat = pos.coords.latitude - 0.00013;
+//this.targetLng = pos.coords.longitude - 0.00013;
 
       this.updateDistance(pos);
     } catch {
