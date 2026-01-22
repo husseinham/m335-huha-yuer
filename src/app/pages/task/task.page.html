@@ -24,10 +24,7 @@
           </div>
         </div>
 
-        <ion-progress-bar
-          class="ion-margin-top"
-          [value]="batteryLevel ?? 0"
-        ></ion-progress-bar>
+        <ion-progress-bar class="ion-margin-top" [value]="batteryLevel ?? 0"></ion-progress-bar>
 
         <div class="ion-margin-top" style="opacity:.85; font-size:0.95em;">
           Stecke das Ladekabel ein. Danach kannst du die Aufgabe abschliessen.
@@ -45,11 +42,7 @@
         </div>
 
         <ion-button expand="block" (click)="scanQr()" [disabled]="qrScanning">
-          <ion-spinner
-            *ngIf="qrScanning"
-            name="dots"
-            class="ion-margin-end"
-          ></ion-spinner>
+          <ion-spinner *ngIf="qrScanning" name="dots" class="ion-margin-end"></ion-spinner>
           QR-Code scannen
         </ion-button>
 
@@ -75,6 +68,26 @@
     </ion-card>
   </ng-container>
 
+  <ng-container *ngIf="key === 'sensor'">
+    <ion-card class="ion-margin-top">
+      <ion-card-content>
+        <div style="font-weight:600;">Telefon 180° drehen</div>
+        <div class="ion-margin-bottom" style="opacity:.85; font-size:0.95em;">
+          Drehe das Gerät so, dass die Ladebuchse nach oben zeigt (Portrait umgedreht).
+        </div>
+
+        <ion-item>
+          <ion-label>
+            <div style="font-weight:600;">Status</div>
+            <div style="opacity:.85;">
+              <span *ngIf="flipped180">✅ Richtige Position erkannt</span>
+              <span *ngIf="!flipped180">❌ Bitte drehen…</span>
+            </div>
+          </ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
   <ion-button expand="block" (click)="markDone()" [disabled]="!canComplete">
     Aufgabe erledigt
   </ion-button>

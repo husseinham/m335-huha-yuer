@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HuntService, TaskKey } from '../../services/hunt.service';
 import { Device } from '@capacitor/device';
 import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
+import { Motion } from '@capacitor/motion';
 
 @Component({
   standalone: true,
@@ -17,13 +18,20 @@ import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 export class TaskPage implements OnInit, OnDestroy {
   key!: TaskKey;
 
-
   isCharging = false;
   batteryLevel: number | null = null;
   private pollId?: any;
 
   qrValue: string | null = null;
   qrScanning = false;
+
+  sensorReady = false;
+  flipped180 = false;
+  private motionHandle?: { remove: () => Promise<void> };
+
+  gX = 0;
+  gY = 0;
+  gZ = 0;
 
   constructor(
     public hunt: HuntService,
@@ -42,10 +50,15 @@ export class TaskPage implements OnInit, OnDestroy {
     if (this.key === 'qr') {
       this.qrValue = this.hunt.getTask('qr').result ?? null;
     }
+
+    if (this.key === 'sensor') {
+      this.startMotion();
+    }
   }
 
   ngOnDestroy() {
     this.stopPolling();
+    this.stopMotion();
   }
 
   private startPolling() {
@@ -85,21 +98,16 @@ export class TaskPage implements OnInit, OnDestroy {
       this.qrScanning = true;
 
       const perm = await BarcodeScanner.requestPermissions();
-      if (perm.camera !== 'granted') {
-        return;
-      }
+      if (perm.camera !== 'granted') return;
 
       const result = await BarcodeScanner.scan();
       const first = result.barcodes?.[0];
 
       if (first?.rawValue) {
         this.qrValue = first.rawValue;
-
         this.hunt.getTask('qr').result = first.rawValue;
 
-        try {
-          await Haptics.impact({ style: ImpactStyle.Light });
-        } catch {}
+        try { await Haptics.impact({ style: ImpactStyle.Light }); } catch {}
       }
     } catch (e) {
       console.warn('QR scan cancelled/failed:', e);
@@ -110,13 +118,47 @@ export class TaskPage implements OnInit, OnDestroy {
 
   clearQr() {
     this.qrValue = null;
-
     this.hunt.getTask('qr').result = undefined;
+  }
+
+  private async startMotion() {
+    if (this.key !== 'sensor') return;
+
+    try {
+      this.motionHandle = await Motion.addListener('accel', (ev: any) => {
+        const g = ev?.accelerationIncludingGravity;
+        if (!g) return;
+
+        const x = Number(g.x ?? 0);
+        const y = Number(g.y ?? 0);
+        const z = Number(g.z ?? 0);
+
+        this.gX = x;
+        this.gY = y;
+        this.gZ = z;
+
+        this.sensorReady = true;
+
+        this.flipped180 = y < -7 && Math.abs(x) < 4;
+      });
+    } catch (e) {
+      console.warn('Motion listener failed:', e);
+      this.sensorReady = false;
+      this.flipped180 = false;
+    }
+  }
+
+  private async stopMotion() {
+    try {
+      await this.motionHandle?.remove();
+    } catch {}
+    this.motionHandle = undefined;
   }
 
   get canComplete(): boolean {
     if (this.key === 'power') return this.isCharging;
     if (this.key === 'qr') return !!this.qrValue;
+    if (this.key === 'sensor') return this.flipped180;
     return true;
   }
 
