@@ -13,21 +13,21 @@ import { HuntService } from '../../services/hunt.service';
   imports: [IonicModule, CommonModule],
 })
 export class GeoPage implements OnDestroy {
-  // Unsere ZielKoordinaten
+  // FIXES Ziel (dein gewünschter Standort)
   public targetLat = 47.0269592;
-  public targetLng =  8.3009105;
+  public targetLng = 8.3009105;
 
-
-
-  // Radius 
- public readonly radiusMeters = 20;
-
+  // Zielzone (Meter)
+  public readonly radiusMeters = 10;
 
   distanceMeters: number | null = null;
+  accuracyMeters: number | null = null;
+
   inZone = false;
   loading = true;
 
   private watchId: string | null = null;
+  private pollTimer: any = null;
 
   constructor(public hunt: HuntService, private router: Router) {
     this.hunt.startTask('geo');
@@ -48,30 +48,49 @@ export class GeoPage implements OnDestroy {
   async startTracking() {
     this.loading = true;
 
-    
+    // Falls schon aktiv -> stoppen
     this.stopTracking();
 
-    // Einmalige Positionsabfrage
+    // 1) Sofort einmal Position holen
     try {
       const pos = await Geolocation.getCurrentPosition({
-  enableHighAccuracy: true,
-});
-//this.targetLat = pos.coords.latitude - 0.00013;
-//this.targetLng = pos.coords.longitude - 0.00013;
-
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 8000,
+      });
       this.updateDistance(pos);
     } catch {
-      // falls es fehlschlägt
+      // ignorieren, wir versuchen es weiter unten per watch/poll
     }
 
-    // Live-Tracking
-    this.watchId = await Geolocation.watchPosition(
-      { enableHighAccuracy: true },
-      (pos, err) => {
-        if (err || !pos) return;
+    // 2) Live Updates via watchPosition
+    try {
+      this.watchId = await Geolocation.watchPosition(
+        {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 15000,
+        },
+        (pos, err) => {
+          if (err || !pos) return;
+          this.updateDistance(pos);
+        }
+      );
+    } catch {
+      this.watchId = null;
+    }
+
+    // 3) Zusätzlicher Poll (Android liefert manchmal zu selten watch-Updates)
+    this.pollTimer = setInterval(async () => {
+      try {
+        const pos = await Geolocation.getCurrentPosition({
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 5000,
+        });
         this.updateDistance(pos);
-      }
-    );
+      } catch {}
+    }, 1200);
 
     this.loading = false;
   }
@@ -81,16 +100,25 @@ export class GeoPage implements OnDestroy {
       Geolocation.clearWatch({ id: this.watchId });
       this.watchId = null;
     }
+    if (this.pollTimer) {
+      clearInterval(this.pollTimer);
+      this.pollTimer = null;
+    }
   }
 
   private updateDistance(pos: Position) {
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
 
-    const d = this.haversineMeters(lat, lng, this.targetLat, this.targetLng);
-    const rounded = Math.max(0, Math.round(d));
+    // Genauigkeit anzeigen (hilft beim Debugging auf Android)
+    this.accuracyMeters = pos.coords.accuracy != null ? Math.round(pos.coords.accuracy) : null;
 
-    if (rounded <= this.radiusMeters) {
+    const d = this.haversineMeters(lat, lng, this.targetLat, this.targetLng);
+
+    // floor statt round -> weniger "steht fest"
+    const shown = Math.max(0, Math.floor(d));
+
+    if (shown <= this.radiusMeters) {
       this.distanceMeters = 0;
       this.inZone = true;
 
@@ -99,13 +127,13 @@ export class GeoPage implements OnDestroy {
         this.hunt.completeTask('geo');
       }
     } else {
-      this.distanceMeters = rounded;
+      this.distanceMeters = shown;
       this.inZone = false;
     }
   }
 
   private haversineMeters(lat1: number, lon1: number, lat2: number, lon2: number) {
-    const R = 6371000; 
+    const R = 6371000;
     const toRad = (x: number) => (x * Math.PI) / 180;
 
     const dLat = toRad(lat2 - lat1);
@@ -120,7 +148,6 @@ export class GeoPage implements OnDestroy {
     return R * c;
   }
 
-  
   weiter() {
     if (!this.inZone) return;
     this.router.navigateByUrl('/task-list');
@@ -132,6 +159,6 @@ export class GeoPage implements OnDestroy {
   }
 
   abbrechen() {
-    this.router.navigateByUrl('/leaderboard'); 
+    this.router.navigateByUrl('/leaderboard'); // später
   }
 }

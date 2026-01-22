@@ -25,13 +25,23 @@
       </span>
     </div>
 
+    <ion-note *ngIf="accuracyMeters !== null">
+      GPS-Genauigkeit: {{ accuracyMeters }} m
+    </ion-note>
+
     <ion-note *ngIf="loading">Standort wird geladen…</ion-note>
+
     <ion-note *ngIf="!loading && !inZone">
       Gehe näher zum Ziel (Radius {{ radiusMeters }} m).
     </ion-note>
+
     <ion-note *ngIf="inZone" color="success">
       Ziel erreicht! Du kannst jetzt weiter.
     </ion-note>
+
+    <ion-button expand="block" fill="outline" (click)="startTracking()">
+      Standort neu prüfen
+    </ion-button>
 
     <div class="buttons">
       <ion-button expand="block" [disabled]="!inZone" (click)="weiter()">
