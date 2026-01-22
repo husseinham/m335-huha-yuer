@@ -18,7 +18,7 @@ export class GeoPage implements OnDestroy {
   public targetLng = 8.3009105;
 
   // Zielzone (Meter)
-  public readonly radiusMeters = 10;
+  public readonly radiusMeters = 20;
 
   distanceMeters: number | null = null;
   accuracyMeters: number | null = null;

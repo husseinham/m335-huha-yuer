@@ -196,7 +196,7 @@ export class TaskPage implements OnInit, OnDestroy {
   }
 
   abort() {
-    // Abbrechen -> zurück zur Startseite (wie du wolltest)
+  
     this.router.navigateByUrl('/start');
   }
 }
