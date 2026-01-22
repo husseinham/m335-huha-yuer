@@ -41,8 +41,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/power/power.page').then(m => m.PowerPage),
   },
-<<<<<<< HEAD
-=======
+
 {
   path: 'task/geo',
   loadComponent: () =>
@@ -65,5 +64,5 @@ export const routes: Routes = [
 },
 
 
->>>>>>> 0f622068d6504bce4c5a29e09425390e12b52f50
+
 ];
