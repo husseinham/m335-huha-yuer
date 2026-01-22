@@ -1,47 +1,122 @@
-.topActions {
-  display: grid;
-  gap: 10px;
-  margin-bottom: 12px;
+.heroCard {
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 18px;
+  padding: 14px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(0,0,0,.06);
+  margin-bottom: 14px;
 }
 
-.row {
+.heroTop {
+  margin-bottom: 10px;
+}
+
+.heroTitle {
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: .2px;
+}
+
+.heroSub {
+  margin-top: 2px;
+  font-size: 12px;
+  opacity: .7;
+}
+
+.emptyCard {
+  border-radius: 18px;
+}
+
+.listWrap {
+  display: grid;
+  gap: 12px;
+  padding-bottom: 18px;
+}
+
+.entry {
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 18px;
+  padding: 14px;
+  background: #fff;
+}
+
+.entryTop {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 12px;
+}
+
+.left {
+  display: flex;
+  align-items: baseline;
   gap: 10px;
+}
+
+.rank {
+  font-weight: 900;
+  opacity: .6;
 }
 
 .name {
   font-size: 15px;
-}
-
-.points {
   font-weight: 800;
 }
 
+.points {
+  font-size: 18px;
+  font-weight: 1000;
+  letter-spacing: .2px;
+}
+
+.pSuffix {
+  font-size: 12px;
+  opacity: .7;
+  margin-left: 2px;
+}
+
 .meta {
-  margin-top: 4px;
+  margin-top: 6px;
   font-size: 12px;
   opacity: .75;
   display: flex;
+  align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.chips {
-  margin-top: 8px;
-  display: flex;
-  gap: 8px;
+.dot {
+  opacity: .6;
 }
 
-.chip {
-  border: 1px solid rgba(0,0,0,.10);
-  border-radius: 999px;
-  padding: 3px 10px;
-  font-size: 12px;
-  background: #fff;
+.emojiRow {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
-.emptyCard {
+.emojiBox {
+  border: 1px solid rgba(0,0,0,.08);
   border-radius: 16px;
+  padding: 10px;
+  text-align: center;
+  background: #fafafa;
+}
+
+.emojiBig {
+  font-size: 34px;
+  line-height: 1;
+}
+
+.emojiText {
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.emojiLabel {
+  margin-top: 2px;
+  font-size: 12px;
+  opacity: .7;
 }
