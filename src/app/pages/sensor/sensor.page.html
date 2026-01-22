@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Sensor</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <p>Bewegung ausführen</p>
+
+  <ion-card class="ion-margin-top">
+    <ion-card-content>
+      <div style="font-weight:600;">Telefon 180° drehen</div>
+      <div class="ion-margin-bottom" style="opacity:.85; font-size:0.95em;">
+        Drehe das Gerät so, dass die Ladebuchse nach oben zeigt (Portrait umgedreht).
+      </div>
+
+      <ion-item>
+        <ion-label>
+          <div style="font-weight:600;">Status</div>
+          <div style="opacity:.85;">
+            <span *ngIf="flipped180">✅ Richtige Position erkannt</span>
+            <span *ngIf="!flipped180">❌ Bitte drehen…</span>
+          </div>
+        </ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button expand="block" (click)="markDone()" [disabled]="!canComplete">
+    Aufgabe erledigt
+  </ion-button>
+
+  <ion-button expand="block" fill="outline" (click)="skip()">
+    Aufgabe überspringen
+  </ion-button>
+
+  <ion-button expand="block" color="danger" fill="outline" (click)="abort()">
+    Durchlauf abbrechen
+  </ion-button>
+</ion-content>

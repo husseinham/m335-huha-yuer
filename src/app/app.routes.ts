@@ -12,7 +12,7 @@ export const routes: Routes = [
 
   {
     path: 'permissions',
-    component: PermissionsPage
+    component: PermissionsPage,
   },
 
   {
@@ -22,14 +22,27 @@ export const routes: Routes = [
   },
 
   {
-    path: 'task/:key',
+    path: 'geo',
     loadComponent: () =>
-      import('./pages/task/task.page').then(m => m.TaskPage),
+      import('./pages/geo/geo.page').then(m => m.GeoPage),
   },
   {
-    path: 'geo',
-    loadComponent: () => import('./pages/geo/geo.page').then( m => m.GeoPage)
+    path: 'qr',
+    loadComponent: () =>
+      import('./pages/qr/qr.page').then(m => m.QrPage),
   },
+  {
+    path: 'sensor',
+    loadComponent: () =>
+      import('./pages/sensor/sensor.page').then(m => m.SensorPage),
+  },
+  {
+    path: 'power',
+    loadComponent: () =>
+      import('./pages/power/power.page').then(m => m.PowerPage),
+  },
+<<<<<<< HEAD
+=======
 {
   path: 'task/geo',
   loadComponent: () =>
@@ -52,5 +65,5 @@ export const routes: Routes = [
 },
 
 
+>>>>>>> 0f622068d6504bce4c5a29e09425390e12b52f50
 ];
-

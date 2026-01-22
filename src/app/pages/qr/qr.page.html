@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>QR-Code</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <p>Scanne den Code</p>
+
+  <ion-card class="ion-margin-top">
+    <ion-card-content>
+      <div style="font-weight:600;">QR-Code scannen</div>
+      <div class="ion-margin-bottom" style="opacity:.85; font-size:0.95em;">
+        Scanne den QR-Code mit der Kamera. Danach kannst du die Aufgabe abschliessen.
+      </div>
+
+      <ion-button expand="block" (click)="scanQr()" [disabled]="qrScanning">
+        <ion-spinner *ngIf="qrScanning" name="dots" class="ion-margin-end"></ion-spinner>
+        QR-Code scannen
+      </ion-button>
+
+      <ion-item class="ion-margin-top">
+        <ion-label>
+          <div style="font-weight:600;">Ergebnis</div>
+          <div style="opacity:.85;">
+            {{ qrValue ?? 'Noch kein Code gescannt.' }}
+          </div>
+        </ion-label>
+      </ion-item>
+
+      <ion-button *ngIf="qrValue" expand="block" fill="outline" class="ion-margin-top" (click)="clearQr()">
+        Ergebnis löschen
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button expand="block" (click)="markDone()" [disabled]="!canComplete">
+    Aufgabe erledigt
+  </ion-button>
+
+  <ion-button expand="block" fill="outline" (click)="skip()">
+    Aufgabe überspringen
+  </ion-button>
+
+  <ion-button expand="block" color="danger" fill="outline" (click)="abort()">
+    Durchlauf abbrechen
+  </ion-button>
+</ion-content>
