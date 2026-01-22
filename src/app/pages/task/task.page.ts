@@ -5,6 +5,7 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HuntService, TaskKey } from '../../services/hunt.service';
 import { Device } from '@capacitor/device';
+import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 
 @Component({
   standalone: true,
@@ -19,6 +20,9 @@ export class TaskPage implements OnInit, OnDestroy {
   isCharging = false;
   batteryLevel: number | null = null;
   private pollId?: any;
+
+  qrValue: string | null = null;
+  qrScanning = false;
 
   constructor(
     public hunt: HuntService,
@@ -41,10 +45,7 @@ export class TaskPage implements OnInit, OnDestroy {
 
   private startPolling() {
     this.readBattery();
-
-    this.pollId = setInterval(() => {
-      this.readBattery();
-    }, 1000);
+    this.pollId = setInterval(() => this.readBattery(), 1000);
   }
 
   private stopPolling() {
@@ -69,12 +70,43 @@ export class TaskPage implements OnInit, OnDestroy {
 
   get batteryPercentText(): string {
     if (this.batteryLevel === null) return '–%';
-    const pct = Math.round(this.batteryLevel * 100);
-    return `${pct}%`;
+    return `${Math.round(this.batteryLevel * 100)}%`;
+  }
+
+  async scanQr() {
+    if (this.key !== 'qr') return;
+
+    try {
+      this.qrScanning = true;
+
+      const perm = await BarcodeScanner.requestPermissions();
+      if (perm.camera !== 'granted') {
+        return;
+      }
+
+      const result = await BarcodeScanner.scan();
+      const first = result.barcodes?.[0];
+
+      if (first?.rawValue) {
+        this.qrValue = first.rawValue;
+        try {
+          await Haptics.impact({ style: ImpactStyle.Light });
+        } catch {}
+      }
+    } catch (e) {
+      console.warn('QR scan cancelled/failed:', e);
+    } finally {
+      this.qrScanning = false;
+    }
+  }
+
+  clearQr() {
+    this.qrValue = null;
   }
 
   get canComplete(): boolean {
     if (this.key === 'power') return this.isCharging;
+    if (this.key === 'qr') return !!this.qrValue;
     return true;
   }
 
