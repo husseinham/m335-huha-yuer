@@ -41,8 +41,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/power/power.page').then(m => m.PowerPage),
   },
-<<<<<<< HEAD
-=======
+
 {
   path: 'task/geo',
   loadComponent: () =>
@@ -53,17 +52,4 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/finish/finish.page').then( m => m.FinishPage)
   },
 
-{
-  path: 'finish',
-  loadComponent: () =>
-    import('./pages/finish/finish.page').then(m => m.FinishPage),
-},
-{
-  path: 'leaderboard',
-  loadComponent: () =>
-    import('./pages/leaderboard/leaderboard.page').then(m => m.LeaderboardPage),
-},
-
-
->>>>>>> 0f622068d6504bce4c5a29e09425390e12b52f50
 ];
