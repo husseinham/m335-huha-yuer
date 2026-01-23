@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 export type TaskKey = 'geo' | 'qr' | 'sensor' | 'power';
 
@@ -30,6 +31,7 @@ export class HuntService {
 
   firstName = '';
   lastName = '';
+  constructor(private http: HttpClient) {}
   huntStartedAt?: number;
   huntFinishedAt?: number;
 
@@ -56,6 +58,31 @@ export class HuntService {
       result: undefined,
     }));
   }
+
+  submitRunToGoogleForm(run: HuntRun) {
+  const url =
+    'https://docs.google.com/forms/u/0/d/e/1FAIpQLSc9v68rbCckYwcIekRLOaVZ0Qdm3eeh1xCEkgpn3d7pParfLQ/formResponse';
+
+  const hours = Math.floor(run.durationSeconds / 3600);
+  const minutes = Math.floor((run.durationSeconds % 3600) / 60);
+  const seconds = run.durationSeconds % 60;
+
+  const body =
+    `entry.1860183935=${encodeURIComponent(run.name)}` + 
+    `&entry.564282981=${run.schnitzel}` + 
+    `&entry.1079317865=${run.kartoffeln}` + 
+    `&entry.985590604=${hours}:${minutes}:${seconds}`; 
+
+  const headers = {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  };
+
+  return this.http.post(url, body, { headers }).subscribe({
+    next: () => console.log('Ergebnis an Google Forms gesendet'),
+    error: err => console.warn('Google Form Fehler:', err)
+  });
+}
+
 
   get doneCount(): number {
     return this.tasks.filter(t => t.done).length;
