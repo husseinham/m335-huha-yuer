@@ -82,6 +82,6 @@ export class QrPage implements OnInit {
   }
 
   abort() {
-    this.router.navigateByUrl('/finish');
+    this.router.navigateByUrl('/leaderboard');
   }
 }

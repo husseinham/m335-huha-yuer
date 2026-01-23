@@ -78,6 +78,6 @@ export class PowerPage implements OnInit, OnDestroy {
   }
 
   abort() {
-    this.router.navigateByUrl('/finish');
+    this.router.navigateByUrl('/leaderboard');
   }
 }

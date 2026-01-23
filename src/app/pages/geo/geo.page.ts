@@ -176,6 +176,6 @@ export class GeoPage implements OnDestroy {
   }
 
   abbrechen() {
-    this.router.navigateByUrl('/finish');
+    this.router.navigateByUrl('/leaderboard');
   }
 }
