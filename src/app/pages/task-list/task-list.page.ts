@@ -30,4 +30,11 @@ openTask(t: TaskState) {
   abortHunt() {
     this.router.navigateByUrl('/finish'); 
   }
+   ionViewWillEnter() {
+    // Wenn alle Aufgaben fertig -> sofort Finish
+    if (this.hunt.isFinished) {
+      this.router.navigateByUrl('/finish');
+      return;
+    }
+  }
 }

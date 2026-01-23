@@ -70,6 +70,6 @@ export class SensorPage implements OnInit, OnDestroy {
   }
 
   abort() {
-    this.router.navigateByUrl('/task-list');
+    this.router.navigateByUrl('/finish');
   }
 }

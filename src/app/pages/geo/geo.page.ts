@@ -17,7 +17,7 @@ export class GeoPage implements OnDestroy {
   public targetLat = 47.0269592;
   public targetLng = 8.3009105;
 
-  public readonly radiusMeters = 50;
+  public readonly radiusMeters = 25;
 
   distanceMeters: number | null = null;
   accuracyMeters: number | null = null;
@@ -163,6 +163,6 @@ export class GeoPage implements OnDestroy {
   }
 
   abbrechen() {
-    this.router.navigateByUrl('/leaderboard'); 
+    this.router.navigateByUrl('/finish'); 
   }
 }
