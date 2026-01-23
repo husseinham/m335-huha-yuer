@@ -13,7 +13,7 @@ import { HuntService } from '../../services/hunt.service';
   imports: [IonicModule, CommonModule],
 })
 export class GeoPage implements OnDestroy {
-//ZielOrt
+  // ZielOrt
   public targetLat = 47.0269592;
   public targetLng = 8.3009105;
 
@@ -47,6 +47,10 @@ export class GeoPage implements OnDestroy {
   async startTracking() {
     this.loading = true;
 
+    this.distanceMeters = null;
+    this.accuracyMeters = null;
+    this.inZone = false;
+
     this.stopTracking();
 
     try {
@@ -60,7 +64,6 @@ export class GeoPage implements OnDestroy {
      
     }
 
-   
     try {
       this.watchId = await Geolocation.watchPosition(
         {
@@ -77,6 +80,7 @@ export class GeoPage implements OnDestroy {
       this.watchId = null;
     }
 
+    // 3) Polling als Backup (Android)
     this.pollTimer = setInterval(async () => {
       try {
         const pos = await Geolocation.getCurrentPosition({
@@ -106,31 +110,38 @@ export class GeoPage implements OnDestroy {
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
 
-    this.accuracyMeters = pos.coords.accuracy != null ? Math.round(pos.coords.accuracy) : null;
+    this.accuracyMeters =
+      pos.coords.accuracy != null ? Math.round(pos.coords.accuracy) : null;
 
     const d = this.haversineMeters(lat, lng, this.targetLat, this.targetLng);
-
     const shown = Math.max(0, Math.floor(d));
 
+    this.distanceMeters = shown;
+
     if (shown <= this.radiusMeters) {
-  this.distanceMeters = 0;
-  this.inZone = true;
+      this.distanceMeters = 0;
+      this.inZone = true;
 
-  if (!this.hunt.getTask('geo').done) {
-    const finished = this.hunt.completeTask('geo');
+      if (!this.hunt.getTask('geo').done) {
+        const finished = this.hunt.completeTask('geo');
 
-    if (finished) {
-      this.stopTracking();
-      this.router.navigateByUrl('/finish');
-      return;
+        if (finished) {
+          this.stopTracking();
+          this.router.navigateByUrl('/finish');
+          return;
+        }
+      }
+    } else {
+      this.inZone = false;
     }
   }
 
-  return;
-}
-  }
-
-  private haversineMeters(lat1: number, lon1: number, lat2: number, lon2: number) {
+  private haversineMeters(
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ) {
     const R = 6371000;
     const toRad = (x: number) => (x * Math.PI) / 180;
 
@@ -139,23 +150,25 @@ export class GeoPage implements OnDestroy {
 
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
 
   weiter() {
-  if (!this.inZone) return;
+    if (!this.inZone) return;
 
-  if (this.hunt.isFinished) {
-    this.router.navigateByUrl('/finish');
-    return;
+    if (this.hunt.isFinished) {
+      this.router.navigateByUrl('/finish');
+      return;
+    }
+
+    this.router.navigateByUrl('/task-list');
   }
-
-  this.router.navigateByUrl('/task-list');
-}
 
   ueberspringen() {
     this.hunt.skipTask('geo');
@@ -163,6 +176,6 @@ export class GeoPage implements OnDestroy {
   }
 
   abbrechen() {
-    this.router.navigateByUrl('/finish'); 
+    this.router.navigateByUrl('/finish');
   }
 }
