@@ -30,8 +30,8 @@ export class FinishPage {
   }
 
   get durationLabel(): string {
-    return this.hunt.formatDuration(this.hunt.durationSeconds);
-  }
+  return this.hunt.formatDuration(this.run?.durationSeconds ?? 0);
+}
 
   newHunt() {
     this.hunt.reset();
@@ -42,5 +42,6 @@ export class FinishPage {
   toLeaderboard() {
     this.nav.navigateRoot('/leaderboard');
   }
+  
 }
 

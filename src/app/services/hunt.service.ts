@@ -68,10 +68,11 @@ export class HuntService {
   const seconds = run.durationSeconds % 60;
 
   const body =
-    `entry.1860183935=${encodeURIComponent(run.name)}` + 
-    `&entry.564282981=${run.schnitzel}` + 
-    `&entry.1079317865=${run.kartoffeln}` + 
-    `&entry.985590604=${hours}:${minutes}:${seconds}`; 
+  `entry.1860183935=${encodeURIComponent(run.name)}` +
+  `&entry.564282981=${encodeURIComponent(String(run.schnitzel))}` +
+  `&entry.1079317865=${encodeURIComponent(String(run.kartoffeln))}` +
+  `&entry.985590604=${encodeURIComponent(`${hours}:${minutes}:${seconds}`)}`;
+
 
   const headers = {
     'Content-Type': 'application/x-www-form-urlencoded'
