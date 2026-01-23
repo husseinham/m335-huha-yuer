@@ -172,19 +172,15 @@ export class TaskPage implements OnInit, OnDestroy {
  async markDone() {
   if (!this.canComplete) return;
 
-  this.hunt.completeTask(this.key);
+  const finished = this.hunt.completeTask(this.key);
 
   try {
     await Haptics.impact({ style: ImpactStyle.Medium });
   } catch {}
 
-  if (this.hunt.isFinished) {
-    this.router.navigateByUrl('/finish');
-    return;
-  }
-
-  this.router.navigateByUrl('/task-list');
+  this.router.navigateByUrl(finished ? '/finish' : '/task-list');
 }
+
 
 
   skip() {

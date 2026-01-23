@@ -103,9 +103,12 @@ export class HuntService {
   }
 
   startTask(key: TaskKey) {
-    const t = this.getTask(key);
-    if (!t.startedAt) t.startedAt = Date.now();
-  }
+  
+  if (!this.huntStartedAt) this.huntStartedAt = Date.now();
+
+  const t = this.getTask(key);
+  if (!t.startedAt) t.startedAt = Date.now();
+}
 
   completeTask(key: TaskKey): boolean {
     const t = this.getTask(key);

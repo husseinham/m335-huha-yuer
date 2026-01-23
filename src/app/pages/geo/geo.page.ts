@@ -113,16 +113,21 @@ export class GeoPage implements OnDestroy {
     const shown = Math.max(0, Math.floor(d));
 
     if (shown <= this.radiusMeters) {
-      this.distanceMeters = 0;
-      this.inZone = true;
+  this.distanceMeters = 0;
+  this.inZone = true;
 
-      if (!this.hunt.getTask('geo').done) {
-        this.hunt.completeTask('geo');
-      }
-    } else {
-      this.distanceMeters = shown;
-      this.inZone = false;
+  if (!this.hunt.getTask('geo').done) {
+    const finished = this.hunt.completeTask('geo');
+
+    if (finished) {
+      this.stopTracking();
+      this.router.navigateByUrl('/finish');
+      return;
     }
+  }
+
+  return;
+}
   }
 
   private haversineMeters(lat1: number, lon1: number, lat2: number, lon2: number) {

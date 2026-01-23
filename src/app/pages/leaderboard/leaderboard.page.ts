@@ -29,26 +29,34 @@ export class LeaderboardPage {
   }
 
   private isRealRun(r: any): r is HuntRun {
-    const nameOk = typeof r?.name === 'string' && r.name.trim().length > 0;
-    const dateOk = this.isValidIsoDate(r?.dateIso);
-    const durationOk = typeof r?.durationSeconds === 'number' && r.durationSeconds > 0;
-    const schnitzelOk = typeof r?.schnitzel === 'number' && r.schnitzel > 0;
-    const pointsOk = typeof r?.points === 'number' && r.points > 0;
+  const nameOk = typeof r?.name === 'string'; 
+  const dateOk = this.isValidIsoDate(r?.dateIso);
 
-    return nameOk && dateOk && durationOk && schnitzelOk && pointsOk;
-  }
+  const durationOk = typeof r?.durationSeconds === 'number' && r.durationSeconds >= 0;
+  const schnitzelOk = typeof r?.schnitzel === 'number' && r.schnitzel >= 0;
+  const kartoffelnOk = typeof r?.kartoffeln === 'number' && r.kartoffeln >= 0;
+
+  const pointsOk = typeof r?.points === 'number' && r.points >= 0;
+
+  return nameOk && dateOk && durationOk && schnitzelOk && kartoffelnOk && pointsOk;
+}
+
 
   loadRuns() {
     const raw = localStorage.getItem(this.STORAGE_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
     const arr = Array.isArray(parsed) ? parsed : [];
 
-    this.runs = arr.filter(r => this.isRealRun(r));
-
-    this.runs.sort((a, b) => {
-      if (b.points !== a.points) return b.points - a.points;
-      return new Date(b.dateIso).getTime() - new Date(a.dateIso).getTime();
-    });
+    this.runs = arr
+  .filter(r => this.isValidIsoDate(r?.dateIso))
+  .map(r => ({
+    name: (r?.name ?? '').toString(),
+    dateIso: r.dateIso,
+    durationSeconds: typeof r?.durationSeconds === 'number' ? r.durationSeconds : 0,
+    schnitzel: typeof r?.schnitzel === 'number' ? r.schnitzel : 0,
+    kartoffeln: typeof r?.kartoffeln === 'number' ? r.kartoffeln : 0,
+    points: typeof r?.points === 'number' ? r.points : 0,
+  }));
   }
 
   clearAll() {
