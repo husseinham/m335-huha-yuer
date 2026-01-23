@@ -141,17 +141,24 @@ export class HuntService {
   }
 
   createRun(): HuntRun {
-    const name = `${this.firstName} ${this.lastName}`.trim();
+  const rawName = `${this.firstName} ${this.lastName}`.trim();
+  const name = rawName.length > 0 ? rawName : 'Unbekannt';
 
-    return {
-      name,
-      dateIso: new Date().toISOString(),
-      durationSeconds: this.durationSeconds,
-      schnitzel: this.schnitzel,
-      kartoffeln: this.kartoffeln,
-      points: this.points,
-    };
-  }
+  const durationSeconds = this.durationSeconds;
+  const schnitzel = this.schnitzel;
+  const kartoffeln = this.kartoffeln;
+  const points = schnitzel * 10 + kartoffeln * 5;
+
+  return {
+    name,
+    dateIso: new Date().toISOString(),
+    durationSeconds,
+    schnitzel,
+    kartoffeln,
+    points,
+  };
+}
+
 
   saveRun(run: HuntRun) {
     const key = 'hunts';
