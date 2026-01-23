@@ -13,23 +13,29 @@ import { HuntService, HuntRun } from '../../services/hunt.service';
 })
 export class FinishPage {
   run!: HuntRun;
+  private saved = false;
 
-
-  private readonly START_ROUTE = '/start'; 
+  private readonly START_ROUTE = '/start';
 
   constructor(public hunt: HuntService, private nav: NavController) {}
 
   ionViewWillEnter() {
-    this.run = this.hunt.createRun();
-    this.hunt.saveRun(this.run);
+    if (!this.saved) {
+      this.run = this.hunt.createRun();
+      this.hunt.saveRun(this.run);
+      this.saved = true;
+    } else {
+      this.run = this.hunt.createRun();
+    }
   }
-get durationLabel(): string {
-  if (!this.run) return '00:00';
-  return this.hunt.formatDuration(this.run.durationSeconds);
-}
+
+  get durationLabel(): string {
+    return this.hunt.formatDuration(this.hunt.durationSeconds);
+  }
 
   newHunt() {
     this.hunt.reset();
+    this.saved = false;
     this.nav.navigateRoot(this.START_ROUTE);
   }
 
@@ -37,3 +43,4 @@ get durationLabel(): string {
     this.nav.navigateRoot('/leaderboard');
   }
 }
+

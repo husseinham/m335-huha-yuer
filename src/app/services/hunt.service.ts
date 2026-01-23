@@ -31,6 +31,7 @@ export class HuntService {
   firstName = '';
   lastName = '';
   huntStartedAt?: number;
+  huntFinishedAt?: number;
 
   tasks: TaskState[] = [
     { key: 'geo', title: 'Geolocation', subtitle: 'Erreiche das Ziel!', icon: 'location-outline', done: false, skipped: false, potato: false },
@@ -43,6 +44,7 @@ export class HuntService {
     this.firstName = first.trim();
     this.lastName = last.trim();
     this.huntStartedAt = Date.now();
+    this.huntFinishedAt = undefined;
 
     this.tasks = this.tasks.map(t => ({
       ...t,
@@ -76,12 +78,16 @@ export class HuntService {
   }
 
   get isFinished(): boolean {
-  return this.doneCount === this.totalCount;
-}
+    return this.doneCount === this.totalCount;
+  }
 
   get durationSeconds(): number {
     if (!this.huntStartedAt) return 0;
-    return Math.max(0, Math.floor((Date.now() - this.huntStartedAt) / 1000));
+
+    const end = this.huntFinishedAt ?? Date.now();
+    const seconds = Math.floor((end - this.huntStartedAt) / 1000);
+
+    return Math.max(1, seconds);
   }
 
   formatDuration(totalSeconds: number): string {
@@ -101,9 +107,9 @@ export class HuntService {
     if (!t.startedAt) t.startedAt = Date.now();
   }
 
-  completeTask(key: TaskKey) {
+  completeTask(key: TaskKey): boolean {
     const t = this.getTask(key);
-    if (t.done) return;
+    if (t.done) return this.isFinished;
 
     const now = Date.now();
     t.finishedAt = now;
@@ -113,6 +119,12 @@ export class HuntService {
     const started = t.startedAt ?? now;
     const duration = now - started;
     t.potato = duration > this.potatoThresholdMs;
+
+    if (this.isFinished && !this.huntFinishedAt) {
+      this.huntFinishedAt = Date.now();
+    }
+
+    return this.isFinished;
   }
 
   skipTask(key: TaskKey) {
@@ -121,24 +133,22 @@ export class HuntService {
     t.skipped = true;
   }
 
+  get points(): number {
+    return this.schnitzel * 10 + this.kartoffeln * 5;
+  }
+
   createRun(): HuntRun {
-  const name = `${this.firstName} ${this.lastName}`.trim();
-  const durationSeconds = this.durationSeconds;
-  const schnitzel = this.schnitzel;
-  const kartoffeln = this.kartoffeln;
+    const name = `${this.firstName} ${this.lastName}`.trim();
 
-  const points = schnitzel * 10 + kartoffeln * 5;
-
-  return {
-    name,
-    dateIso: new Date().toISOString(),
-    durationSeconds,
-    schnitzel,
-    kartoffeln,
-    points,
-  };
-}
-
+    return {
+      name,
+      dateIso: new Date().toISOString(),
+      durationSeconds: this.durationSeconds,
+      schnitzel: this.schnitzel,
+      kartoffeln: this.kartoffeln,
+      points: this.points,
+    };
+  }
 
   saveRun(run: HuntRun) {
     const key = 'hunts';
@@ -152,6 +162,7 @@ export class HuntService {
     this.firstName = '';
     this.lastName = '';
     this.huntStartedAt = undefined;
+    this.huntFinishedAt = undefined;
 
     this.tasks = this.tasks.map(t => ({
       ...t,
@@ -163,9 +174,4 @@ export class HuntService {
       result: undefined,
     }));
   }
-  get points(): number {
-  return this.schnitzel * 10 + this.kartoffeln * 5;
-}
-
-
 }
